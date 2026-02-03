@@ -1,0 +1,24 @@
+{
+  "content": {
+    "src": "get-started-with-databricks-for-machine-learning-2.1.1.zip"
+  },
+  "user_config": {
+    "cluster_config": {
+      "spark_version": "15.4.x-cpu-ml-scala2.12",
+      "node_type_id": "i3.xlarge",
+      "autotermination_minutes": 120
+    }
+  },
+  "datasets": [
+    {
+          "listing_name": "Wine Quality Data",
+          "name": "wine_quality",
+          "version": "v01"
+        },
+        {
+          "listing_name": "Airbnb Sample Data",
+          "name": "airbnb",
+          "version": "v01"
+        }
+  ]
+}

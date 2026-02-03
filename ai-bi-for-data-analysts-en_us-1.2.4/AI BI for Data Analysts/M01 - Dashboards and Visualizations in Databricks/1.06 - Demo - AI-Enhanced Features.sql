@@ -1,0 +1,174 @@
+-- Databricks notebook source
+-- MAGIC %md
+-- MAGIC
+-- MAGIC <div style="text-align: center; line-height: 0; padding-top: 9px;">
+-- MAGIC   <img
+-- MAGIC     src="https://databricks.com/wp-content/uploads/2018/03/db-academy-rgb-1200px.png"
+-- MAGIC     alt="Databricks Learning"
+-- MAGIC   >
+-- MAGIC </div>
+-- MAGIC
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC ## 1.06 Demo - AI-Enhanced Features
+-- MAGIC
+-- MAGIC Databricks AI/BI Dashboards help you quickly transform data into shareable insights. 
+-- MAGIC
+-- MAGIC In this lesson, we’ll learn about the capabilities of AI/BI dashboards to help you develop dashboards faster using AI.
+-- MAGIC
+-- MAGIC
+-- MAGIC This lesson uses the following resources:
+-- MAGIC - Tables:
+-- MAGIC   - Catalog: dbacademy
+-- MAGIC   - Schema: {dynamically named, personal to you}
+-- MAGIC   - Tables:
+-- MAGIC     - ca_customers
+-- MAGIC     - ca_orders
+-- MAGIC     - ca_products
+-- MAGIC     - ca_opportunities
+-- MAGIC
+-- MAGIC These tables contain simulated business-to-business order and opportunity data for an imaginary company's Canadian sales operation. The **ca_orders** table contains information from 2021 through the middle of November 2024. This table identifies the relevant customer with a unique key that points into the **ca_customers** table, and it identifies the relevant product with a unique key that points into the **ca_products** table. The **ca_opportunities** table provides additional details regarding sales opportunities and sales representatives. You'll use the data in these tables to prepare your dashboard.
+-- MAGIC
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC ### REQUIRED: Course Setup and Data Discovery
+-- MAGIC The first thing you'll need to complete any data analytics task is the appropriate data for the request. To find the right data, you'll need to use the Catalog Explorer or the Databricks Search box to locate the data for this project. In this particular lab exercise, a setup script will copy tables from a Databricks Marketplace share into a schema you control. To get started, click the small triangle **Run** button in the top left of the cell below.
+
+-- COMMAND ----------
+
+-- MAGIC %run "../Includes/setup/ca_setup_with_products_table"
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC This script clones a few small data tables from a Databricks Marketplace share into your personal schema. At the end it prints out the name of your catalog and your schema. The schema will have a randomly generated name. Make a note of this value. In these instructions, we'll call this simply "your schema."
+-- MAGIC
+-- MAGIC To use the Catalog Explorer, follow the steps below.
+-- MAGIC
+-- MAGIC 1. Select **Catalog** from the sidebar navigation.
+-- MAGIC 1. In the catalog selector, locate the catalog titled: **dbacademy**. You can also use the search at the top to narrow down the available options.
+-- MAGIC 1. Expand your schema. You should see four tables in this schema.
+-- MAGIC     - ca_customers
+-- MAGIC     - ca_orders
+-- MAGIC     - ca_opportunities
+-- MAGIC     - ca_products
+-- MAGIC
+-- MAGIC
+-- MAGIC
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC #### A Note about AI-Enhanced Features
+-- MAGIC We want you to be aware that while we provide scripted text for refinements to the AI prompts, AI can act differently for each person each time it is used. So note that you may need to do additional refinement questions and/or manual edits to the returned queries to develop a fully functional query using AI. It is always best to review the output from AI for accuracy and correctness before using in production environments.
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC ### A: Define a Dataset with AI Help
+-- MAGIC
+-- MAGIC In this exercise we'll define a new dashboard and let Databricks Assistant help us compose the SQL query that will define the dataset.
+-- MAGIC
+-- MAGIC **📌 NOTE:** Throughout these instructions, replace YOURSCHEMA with the name of your schema. (You can find your schema name in the setup run cell that you have just executed.) Additionally, many of the following instructions take place in a non-notebook area of the platform. It is recommended to open either the notebooks in a separate tab or window to reference the instructions alongside the area where they are performed.
+-- MAGIC
+-- MAGIC 1. Select **Dashboards** from the sidebar navigation. (It is recommended to right-click and select Open Link in New Window or Tab)
+-- MAGIC 1. Click the **Create dashboard** button at top right.
+-- MAGIC 1. At the top left of the dashboard definition panel, you'll see the placeholder dashboard name, which will be something like `New Dashboard 202X-01-01 12:00:00`. Click on it and change its name to **Orders and Opportunities 2023**.
+-- MAGIC 1. In the resulting dashboard-creation screen, click the **Data** tab. 
+-- MAGIC 1. You will find three choices: **Create from SQL**, **Add data source**, and **Upload file**. Choose the other option, **Create from SQL**.
+-- MAGIC 1. Click on the Databricks Assistant icon on the left side of the dashboard-definition panel (a small four-pointed star). The Databricks Assistant chat window opens up at right. 
+-- MAGIC
+-- MAGIC     **📌 NOTE:** Note the Assistant may give different results. Please read carefully and confirm the correct query below.
+-- MAGIC
+-- MAGIC 1. Enter this prompt: (Remember to replace YOURSCHEMA with your unique schema name.)
+-- MAGIC <br/>
+-- MAGIC
+-- MAGIC     ```
+-- MAGIC     Give me a query with all the fields in the
+-- MAGIC     dbacademy.YOURSCHEMA.ca_orders table, joined with the dbacademy.YOURSCHEMA.ca_customers
+-- MAGIC     ```
+-- MAGIC
+-- MAGIC   In the chat window at right, Databricks Assistant proposes a query.
+-- MAGIC
+-- MAGIC 8. Let's refine this query. In the chat text-entry field below that suggested query, enter this prompt:
+-- MAGIC <br/>
+-- MAGIC
+-- MAGIC     ```
+-- MAGIC     Leave out the productID field
+-- MAGIC     ```
+-- MAGIC
+-- MAGIC 1. One more refinement. Enter this prompt:
+-- MAGIC <br/>
+-- MAGIC
+-- MAGIC     ```
+-- MAGIC     I only want to see orders in calendar year 2023
+-- MAGIC     ```
+-- MAGIC
+-- MAGIC 1. Confirm the query shows the following. If not simply use the query provided below.
+-- MAGIC <br/>
+-- MAGIC
+-- MAGIC     ```SQL
+-- MAGIC     SELECT o.orderid,
+-- MAGIC           o.orderdate,
+-- MAGIC           o.quantity,
+-- MAGIC           o.orderamt,
+-- MAGIC           o.salesrep,
+-- MAGIC           c.customerid,
+-- MAGIC           c.customername,
+-- MAGIC           c.city,
+-- MAGIC           c.province
+-- MAGIC     FROM dbacademy.YOURSCHEMA.ca_orders o
+-- MAGIC     JOIN dbacademy.YOURSCHEMA.ca_customers c
+-- MAGIC       ON o.customerid = c.customerid
+-- MAGIC     WHERE YEAR(o.orderdate) = 2023
+-- MAGIC     ```
+-- MAGIC
+-- MAGIC 11. When you are happy with the query, click the small "Copy" icon in Databricks Assistant's response window and paste the SQL query into the dataset definition dialogue's main screen. Click **Run** to confirm that the query works. Feel free to adjust it if necessary, either manually or by clicking Databricks Assistant's help button to diagnose the problem and suggest a repaired query.
+-- MAGIC
+-- MAGIC 12. Click on the kebab menu to the right of the working name of this dataset ("Untitled dataset") and rename the dataset to **orders2023**.
+-- MAGIC
+-- MAGIC
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC ### B: Define a Visualization with AI Help
+-- MAGIC
+-- MAGIC In this exercise we'll let Databricks Assistant help us build a visualization based on our dataset.
+-- MAGIC
+-- MAGIC 1. Click on the **Untitled page** canvas tab at top left to switch to the canvas view.
+-- MAGIC 1. At the bottom of the screen you have a palette for adding various widgets. Click the icon in the palette for adding a visualization and drag the resulting widget to the top of your canvas.
+-- MAGIC
+-- MAGIC 1. Click into the just-placed widget. Notice that Databricks Assistant offers a box into which you can type a text prompt. Enter this prompt:
+-- MAGIC <br/>
+-- MAGIC
+-- MAGIC       ```
+-- MAGIC       bar chart of Total Sales by order month
+-- MAGIC       ```
+-- MAGIC
+-- MAGIC **Checkpoint**
+-- MAGIC
+-- MAGIC ![Bar Chart No Sales](../Includes/images/106_first_bar_chart.png)
+-- MAGIC
+-- MAGIC 4. That would be more useful if it were split out by sales rep. Let's refine the visualization with a new prompt to that effect:
+-- MAGIC <br/>
+-- MAGIC
+-- MAGIC       ```
+-- MAGIC       split out by Sales Rep
+-- MAGIC       ```
+-- MAGIC
+-- MAGIC **Checkpoint**
+-- MAGIC
+-- MAGIC ![Bar Chart No Sales](../Includes/images/106_final_bar_chart.png)
+-- MAGIC
+-- MAGIC 5. If the result looks good, click **Accept**. Otherwise, you can click **Reject** and try again.
+-- MAGIC 1. After you have clicked **Accept**, click once inside the body of the new visualization to make sure it has mouse focus. Notice that the configuration panel at right displays details of the visualization. You can modify it further using this panel.
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC &copy; 2026 Databricks, Inc. All rights reserved. Apache, Apache Spark, Spark, the Spark Logo, Apache Iceberg, Iceberg, and the Apache Iceberg logo are trademarks of the <a href="https://www.apache.org/" target="_blank">Apache Software Foundation</a>.<br/><br/><a href="https://databricks.com/privacy-policy" target="_blank">Privacy Policy</a> | <a href="https://databricks.com/terms-of-use" target="_blank">Terms of Use</a> | <a href="https://help.databricks.com/" target="_blank">Support</a>

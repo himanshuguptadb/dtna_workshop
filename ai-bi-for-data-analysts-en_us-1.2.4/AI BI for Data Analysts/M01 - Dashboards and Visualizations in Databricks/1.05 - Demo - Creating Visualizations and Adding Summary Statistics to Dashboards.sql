@@ -1,0 +1,302 @@
+-- Databricks notebook source
+-- MAGIC %md
+-- MAGIC
+-- MAGIC <div style="text-align: center; line-height: 0; padding-top: 9px;">
+-- MAGIC   <img
+-- MAGIC     src="https://databricks.com/wp-content/uploads/2018/03/db-academy-rgb-1200px.png"
+-- MAGIC     alt="Databricks Learning"
+-- MAGIC   >
+-- MAGIC </div>
+-- MAGIC
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC ## 1.05 Demo - Creating Visualizations and Adding Summary Statistics to Dashboards
+-- MAGIC
+-- MAGIC Databricks AI/BI Dashboards help you quickly transform data into shareable insights. 
+-- MAGIC
+-- MAGIC In this lesson, we’ll build on the dashboard with the datasets we created in the previous demo, populating the canvas of our dashboard with text widgets and visualizations. Be sure that you have completed that demo, entitled *Designing Datasets for Dashboards*, before proceeding.
+-- MAGIC
+-- MAGIC
+-- MAGIC This lesson uses the following resources:
+-- MAGIC - Tables:
+-- MAGIC   - Catalog: dbacademy
+-- MAGIC   - Schema: {dynamically named, personal to you}
+-- MAGIC   - Tables:
+-- MAGIC     - ca_customers
+-- MAGIC     - ca_orders
+-- MAGIC     - ca_products
+-- MAGIC     - ca_opportunities
+-- MAGIC
+-- MAGIC These tables contain simulated business-to-business order and opportunity data for an imaginary company's Canadian sales operation. The **ca_orders** table contains information from 2021 through the middle of November 2024. This table identifies the relevant customer with a unique key that points into the **ca_customers** table, and it identifies the relevant product with a unique key that points into the **ca_products** table. The **ca_opportunities** table provides additional details regarding sales opportunities and sales representatives. You'll use the data in these tables to prepare your dashboard.
+-- MAGIC
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC ### REQUIRED: Course Setup and Data Discovery
+-- MAGIC To get started, click the small triangle **Run** button in the top left of the cell below.
+
+-- COMMAND ----------
+
+-- MAGIC %run "../Includes/setup/ca_setup_with_products_table"
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC This script clones a few small data tables from a Databricks Marketplace share into your personal schema. At the end it prints out the name of your catalog and your schema. The schema will have a randomly generated name. Make a note of this value. In these instructions, we'll call this simply "your schema."
+-- MAGIC
+-- MAGIC To use the Databricks Catalog Explorer to see your newly loaded data, follow the steps below.
+-- MAGIC
+-- MAGIC 1. Select **Catalog** from the sidebar navigation.
+-- MAGIC 1. In the catalog selector, locate the catalog titled: **dbacademy**. You can also use the search at the top to narrow down the available options.
+-- MAGIC 1. Expand your schema. You should see four tables in this schema.
+-- MAGIC     - ca_customers
+-- MAGIC     - ca_orders
+-- MAGIC     - ca_opportunities
+-- MAGIC     - ca_products
+-- MAGIC
+-- MAGIC
+-- MAGIC
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC ### A: Build Out a Dashboard
+-- MAGIC
+-- MAGIC In a previous activity, you created a dashboard and defined some datasets. Now we can populate the dashboard's canvas with useful displays.
+-- MAGIC
+-- MAGIC **📌 NOTE:** Many of the following instructions take place in a non-notebook area of the platform. It is recommended to open either the notebooks in a separate tab or window to reference the instructions alongside the area where they are performed.
+-- MAGIC
+-- MAGIC 1. Select **Dashboards** from the sidebar navigation. (It is recommended to right-click and select Open Link in New Window or Tab)
+-- MAGIC 1. Click on the dashboard you began building in the previous activity.
+-- MAGIC 1. At the top left of the dashboard definition panel, if you still see the placeholder dashboard name (which will be something like `New Dashboard 202X-01-01 12:00:00`), click on it and change its name to **Canada Sales**.
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC #### Adding a Text Box
+-- MAGIC
+-- MAGIC Let's add a name and a space for a text description of the dashboard to the canvas. When adding a new widget to the canvas, other widgets automatically move to accommodate your placement. You can use your mouse to move and resize widgets. To delete a widget, right-click it or use the kebab in the upper right and choose **Delete** from the resulting context menu. 
+-- MAGIC
+-- MAGIC Complete the following steps to add a text box to the dashboard:
+-- MAGIC
+-- MAGIC 1. Click on the **Untitled page** canvas tab at top left to switch to the canvas view.
+-- MAGIC 1. At the bottom of the screen you have a palette for adding various widgets. Click the icon in the palette for adding a text box and drag the resulting widget to the top of your canvas. The text-box icon looks like a T in a small rectangle.
+-- MAGIC 1. Click into the just-placed widget and type: `# Canada Sales`
+-- MAGIC
+-- MAGIC     **📌 Note:** Text boxes use [Markdown](https://daringfireball.net/projects/markdown/syntax) syntax. The single `#` character in the included texts indicates that <b>Canada Sales</b> is to be styled as a level-1 heading. 
+-- MAGIC
+-- MAGIC 1. On the next line, type a brief explanation of what this dashboard is for, such as `This dashboard helps you support and evaluate our Canada sales operation.` 
+-- MAGIC 1. Experiment with dragging the right and lower edges of the text widget inward.
+-- MAGIC 1. Experiment with moving the widget around the canvas by clicking and dragging it. Does it have to be flush with the top right edge?
+-- MAGIC 1. Return the text widget to 1/2 width and the top and left edges of the canvas. There should be space to the right of the widget.
+-- MAGIC
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC #### Adding a counter widget
+-- MAGIC
+-- MAGIC
+-- MAGIC The first visualization we'll be adding to the dashboard is a counter visualization to display the current sales against a sales goal of $300 million.
+-- MAGIC
+-- MAGIC 1. Return to the **Untitled page** canvas tab if you navigated away.  
+-- MAGIC 1. Click the icon in the palette for adding a visualization, which is a tiny thumbnail of a line chart.  
+-- MAGIC 1. Move your cursor to the top right of the unused space in the canvas (to the right of the text box) and click to add the visualization to the canvas.  
+-- MAGIC 1. In the configuration panel on the right, make the following selections for the settings:
+-- MAGIC
+-- MAGIC     - **Title:** Checked
+-- MAGIC       - Click on **Widget Title** on the visualization.
+-- MAGIC       - Change it by typing over it to **Sales Goal**.
+-- MAGIC     - **Dataset:** **SumTotalSales**
+-- MAGIC     - **Visualization:** Counter
+-- MAGIC     - **Value:** Total_Sales
+-- MAGIC     - **Comparison:** Sales_Goal
+-- MAGIC
+-- MAGIC 1. Click on **Total_Sales** in the **Value** area of the configuration panel and select **Format** from the resulting dropdown. Make the following adjustments:
+-- MAGIC     - Change **Auto** to **Custom**.
+-- MAGIC     - Set **Type** to Currency ($)
+-- MAGIC     - Change the Currency to Canadian Dollars ($)
+-- MAGIC
+-- MAGIC 1. In the Style section, click the **+** next to **Conditional Style**. Configure it with the following settings:
+-- MAGIC     - If Value <= Target
+-- MAGIC     - Then (Color: Red)
+-- MAGIC
+-- MAGIC Bonus: If time allows, feel free to adjust other settings within the Value and Target fields to further refine the Counter widget. For example, format the target the same as the value or edit the display type.
+-- MAGIC
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC #### Adding bar charts
+-- MAGIC
+-- MAGIC Next, let's add another visualization, this time a bar chart that focuses on change over time.
+-- MAGIC
+-- MAGIC 1. Return to the **Untitled page** canvas tab if you navigated away.  
+-- MAGIC 1. Click the icon in the palette for adding a visualization.
+-- MAGIC 1. Land the new widget on the left side of the canvas, below the text widget. Click in the new widget to give it focus. 
+-- MAGIC 1. In the **Configuration Panel** on the right, make the following selections for the settings:
+-- MAGIC
+-- MAGIC     - **Title:** Checked
+-- MAGIC       - Click on **Widget Title** on the visualization.
+-- MAGIC       - Change it by typing over it to **Order History**.
+-- MAGIC     - **Dataset**: **Orders22**
+-- MAGIC     - **Visualization**: Bar
+-- MAGIC     - **X axis**: Click the **+** and select **orderdate**.
+-- MAGIC
+-- MAGIC       Notice that the dialogue guesses that we want to view the data on a monthly basis by replacing **orderdate** with **MONTHLY(orderdate)**. Click on **MONTHLY(orderdate)** and fill in **Order date** for the **Display name** near the bottom.
+-- MAGIC
+-- MAGIC     - **Y axis**: Click the **+** and select **orderamt**.
+-- MAGIC     - **Color**: Click the **+** and select **salesrep** so that we get a stacked bar chart.
+-- MAGIC 1. Clone the bar-chart widget by right-clicking in its area on the canvas and picking **Clone** from the context menu.
+-- MAGIC 1. Land the new cloned widget to the right of the one you just made.
+-- MAGIC 1. Click inside its area to make sure it has mouse focus.
+-- MAGIC 1. Use the configuration panel at right to change the field for **Color** from **salesrep** to **province**. You now have two breakdowns of sales, one by sales representative and one by the customer's province.
+-- MAGIC 1. Because we are going to add another visualization that breaks down performance by province another way, delete the **province** field from this visualization's **Color** parameter by clicking the minus (–) icon.
+-- MAGIC
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC #### Adding a pie chart
+-- MAGIC
+-- MAGIC Let's show how our revenue is distributed among the Canadian provinces by adding a pie chart. To make this pie chart, complete the following steps:
+-- MAGIC
+-- MAGIC 1. Return to the **Untitled page** canvas tab if you navigated away.  
+-- MAGIC 1. Click the icon in the palette for adding a visualization.
+-- MAGIC 1. Land the new widget on the left side of the canvas underneath the stacked bar chart. Click in the new widget to give it focus.  
+-- MAGIC 1. In the **Configuration Panel** on the right, make the following selections for the settings: 
+-- MAGIC
+-- MAGIC     - **Title:** Checked
+-- MAGIC       - Click on the placeholder widget title on the visualization.
+-- MAGIC       - Drag the widget's right edge so that it fills the entire width of the canvas.
+-- MAGIC       - Change it by typing over it to **Revenue Share by Province**.
+-- MAGIC     - **Dataset**: **Orders22**
+-- MAGIC     - **Visualization**: Pie
+-- MAGIC     - **Angle**: Click the **+** and select **orderamt**. Fill in **Revenue** for the display name.
+-- MAGIC     - **Color**: Click the **+** and choose **province**.
+-- MAGIC       Fill in **Province** for the display name.
+-- MAGIC
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC #### Adding a chart for a summary statistic
+-- MAGIC
+-- MAGIC Let's illustrate how variable our sales order amounts are among our products. To make this  chart, complete the following steps:
+-- MAGIC
+-- MAGIC 1. Return to the **Untitled page** canvas tab if you navigated away.  
+-- MAGIC 1. Click the icon in the palette for adding a visualization.
+-- MAGIC 1. Land the new widget on the left side of the canvas underneath the stacked bar chart. Click in the new widget to give it focus.  
+-- MAGIC 1. In the **Configuration Panel** on the right, make the following selections for the settings: 
+-- MAGIC
+-- MAGIC     - **Dataset**: **Orders22**
+-- MAGIC     - **Title:** Checked
+-- MAGIC       - Click on the placeholder widget title on the visualization.
+-- MAGIC       - Drag the widget's right edge so that it fills the entire width of the canvas.
+-- MAGIC       - Change it by typing over it to **Revenue Share by Product**.
+-- MAGIC     - **Visualization**: Bar
+-- MAGIC     - **X axis**: Click the **+** and select **productname**.
+-- MAGIC
+-- MAGIC       Click on **productname** and fill in **Product name** for the display name.
+-- MAGIC     - **Y axis**: Click the **+** and choose **orderamt**.
+-- MAGIC       The dashboard creation dialogue defaults to **SUM(orderamt)**. Click on **SUM(orderamt)** and change the transformation to **STD**.
+-- MAGIC
+-- MAGIC 5. Grab the widget's right edge and drag it to fill the full width of the page.
+-- MAGIC
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC #### Adding an embedded image to a text field
+-- MAGIC
+-- MAGIC It's very common for organizations to put their company logo or other distinguishing graphics into their dashboards. Let's add a logo to this one.
+-- MAGIC
+-- MAGIC 1. In your dashboard's **Canvas** tab, double-click  inside the text field at top.
+-- MAGIC 1. Now open up a new line above the Canada Sales header. Here you will add a company logo. First type the Markdown syntax for an embedded image:
+-- MAGIC
+-- MAGIC     `![company logo]()` 
+-- MAGIC
+-- MAGIC     (Whatever is between the square brackets will be treated as alt text.)
+-- MAGIC
+-- MAGIC     Now get an image URL into your browser's clipboard. You can right-click on the image below and capture its link address to use it, or you can use another logo, such as your own company's. Just make sure that the image is small. (Pro-tip: open the image in a new browser tab to confirm that it is small before proceeding.)
+-- MAGIC
+-- MAGIC     ![Description](../Includes/images/newlogo4_sm.png)
+-- MAGIC
+-- MAGIC     Paste the URL between the parentheses (not the brackets!). 
+-- MAGIC
+-- MAGIC 1. Click outside the text widget to see it rendered.
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC #### Adding a second page to the dashboard
+-- MAGIC
+-- MAGIC It is a very common design pattern for the first page of a dashboard to be all visualizations, and the second page to offer users the opportunity to browse the data behind those visualizations. 
+-- MAGIC
+-- MAGIC 1. Click the kebab next to **Untitled page** and Rename it to **Overview**.
+-- MAGIC 1. Click the **+** icon to add a new page, which will at first also be called **Untitled page**.
+-- MAGIC 1. Rename the new **Untitled page** to **Source Data**.
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC #### Adding a table to the dashboard's second page
+-- MAGIC
+-- MAGIC Let's allow our users to browse the underlying data.
+-- MAGIC
+-- MAGIC 1. Return to the **Source Data** canvas tab if you navigated away.  
+-- MAGIC
+-- MAGIC 1. If you are not already viewing the page called **Source Data** click on its button at top left to move to it.
+-- MAGIC
+-- MAGIC 1. Select **Add a visualization** from the menu at the bottom of the canvas and click on the canvas to add the visualization. 
+-- MAGIC
+-- MAGIC 1. In the **Configuration Panel** on the right, make the following selections for the settings: 
+-- MAGIC
+-- MAGIC     - **Dataset**: **Orders22**
+-- MAGIC     - **Visualization**: Table
+-- MAGIC     - **Columns**: 
+-- MAGIC       - Click the box for **Show/hide all** to add all the fields to the table.
+-- MAGIC
+-- MAGIC 1. Grab the right edge of the widget and expand it to the full width of the page.
+-- MAGIC
+-- MAGIC Notice that, just as with a spreadsheet, your users can sort all the data by clicking on the header. Clicking once selects ascending order and clicking again selects descending order.
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC #### Adding a pivot table to the dashboard
+-- MAGIC
+-- MAGIC Let's put a useful tabular summary of the underlying data onto the dashboard's second page.
+-- MAGIC
+-- MAGIC 1. On the **Source Data** page canvas, click the icon in the palette for adding a visualization.
+-- MAGIC 1. Land the new widget on the canvas underneath the existing table. Click in the new widget to give it focus.  
+-- MAGIC 1. Drag the widget's right edge so that it extends the full width of the page.
+-- MAGIC 1. In the **Configuration Panel** on the right, make the following selections for the settings: 
+-- MAGIC
+-- MAGIC     - **Dataset**: **Orders22**
+-- MAGIC     - **Visualization**: Pivot
+-- MAGIC     - **Rows**: 
+-- MAGIC       - Select **salesrep**
+-- MAGIC     - **Columns**:
+-- MAGIC       - Select **province**
+-- MAGIC     - **Values**
+-- MAGIC       - Select **orderamt** (the system will guess that you mean to apply the **SUM** aggregation)
+-- MAGIC
+-- MAGIC
+-- MAGIC 1. Click on **Sum(orderamt)** in the Value area of the configuration panel and select Format from the resulting dropdown. Make the following adjustments:
+-- MAGIC
+-- MAGIC     - Change Format from **Auto** to **Custom**.
+-- MAGIC     - Set **Type** to Currency ($)
+-- MAGIC     - Change the Currency to **Canadian Dollars ($)**
+-- MAGIC     - **Abbreviation**: Compact
+-- MAGIC     - Change **Decimal Places** from 2 to 0
+-- MAGIC
+-- MAGIC Click off the format dialogue box to save the changes.
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC &copy; 2026 Databricks, Inc. All rights reserved. Apache, Apache Spark, Spark, the Spark Logo, Apache Iceberg, Iceberg, and the Apache Iceberg logo are trademarks of the <a href="https://www.apache.org/" target="_blank">Apache Software Foundation</a>.<br/><br/><a href="https://databricks.com/privacy-policy" target="_blank">Privacy Policy</a> | <a href="https://databricks.com/terms-of-use" target="_blank">Terms of Use</a> | <a href="https://help.databricks.com/" target="_blank">Support</a>

@@ -1,0 +1,269 @@
+-- Databricks notebook source
+-- MAGIC %md
+-- MAGIC
+-- MAGIC <div style="text-align: center; line-height: 0; padding-top: 9px;">
+-- MAGIC   <img
+-- MAGIC     src="https://databricks.com/wp-content/uploads/2018/03/db-academy-rgb-1200px.png"
+-- MAGIC     alt="Databricks Learning"
+-- MAGIC   >
+-- MAGIC </div>
+-- MAGIC
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC ## 2.03 Demo - Developing Genie Spaces
+-- MAGIC
+-- MAGIC Databricks AI/BI Genie empowers your end users by allowing them to have natural language chats directly with your organization's data. 
+-- MAGIC
+-- MAGIC In this lesson, we’ll learn how to perform the initial definition of a Genie space. 
+-- MAGIC
+-- MAGIC
+-- MAGIC This lesson uses the following resources:
+-- MAGIC - Tables:
+-- MAGIC   - Catalog: dbacademy
+-- MAGIC   - Schema: {dynamically named, personal to you}
+-- MAGIC   - Tables:
+-- MAGIC     - ca_customers
+-- MAGIC     - ca_orders
+-- MAGIC     - ca_opportunities
+-- MAGIC     - ca_products
+-- MAGIC
+-- MAGIC These tables contain simulated business-to-business order and opportunity data for an imaginary company's Canadian sales operation. The **ca_orders** table contains information from 2021 through the middle of November 2024. This table identifies the relevant customer with a unique key that points into the **ca_customers** table, and it identifies the relevant product with a unique key that points into the **ca_products** table. The **ca_opportunities** table provides additional details regarding sales opportunities and sales representatives. You'll use the data in these tables to prepare your Genie space.
+-- MAGIC
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC ### REQUIRED: Course Setup and Data Discovery
+-- MAGIC The first thing you'll need to complete any data analytics task is the appropriate data for the request. To find the right data, you'll need to use the Catalog Explorer or the Databricks Search box to locate the data for this project. In this particular lab exercise, a setup script will copy tables from a Databricks Marketplace share into a schema you control. To get started, click the small triangle **Run** button in the top left of the cell below.
+
+-- COMMAND ----------
+
+-- MAGIC %run "../Includes/setup/ca_setup_with_products_table"
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC This script clones a few small data tables from a Databricks Marketplace share into your personal schema. At the end it prints out the name of your catalog and your schema. The schema will have a randomly generated name. Make a note of this value. In these instructions, we'll call this simply "your schema."
+-- MAGIC
+-- MAGIC To use the Catalog Explorer, follow the steps below.
+-- MAGIC
+-- MAGIC 1. Select **Catalog** from the sidebar navigation.
+-- MAGIC 1. In the catalog selector, locate the catalog titled: **dbacademy**. You can also use the search at the top to narrow down the available options.
+-- MAGIC 1. Expand your schema. You should see four tables in this schema.
+-- MAGIC     - ca_customers
+-- MAGIC     - ca_orders
+-- MAGIC     - ca_opportunities
+-- MAGIC     - ca_products
+-- MAGIC
+-- MAGIC
+-- MAGIC
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC ### A: Create a Genie Space
+-- MAGIC
+-- MAGIC In this lesson, you’ll get a hands-on view of the settings and details involved in creating Genie Spaces. You’ll also learn the differences between Genie Spaces created from a dashboard and those created independently.
+-- MAGIC
+-- MAGIC **📌 NOTE:** Many of the following instructions take place in a non-notebook area of the platform. It is recommended to open either the notebooks in a separate tab or window to reference the instructions alongside the area where they are performed.
+-- MAGIC
+-- MAGIC 1. Select **Genie** from the sidebar navigation. (It is recommended to right-click and select Open Link in New Window or Tab)
+-- MAGIC
+-- MAGIC 1. Click the **+ New** button at top right.
+-- MAGIC
+-- MAGIC 1. You'll be presented with the **Connect your data** dialogue box. Click **All** and navigate to `dbacademy.YOURSCHEMA` and select the following four tables: 
+-- MAGIC
+-- MAGIC     - ca_customers
+-- MAGIC     - ca_orders
+-- MAGIC     - ca_opportunities
+-- MAGIC     - ca_products
+-- MAGIC
+-- MAGIC     A checkbox will appear next to each as you select them.
+-- MAGIC
+-- MAGIC 4. Next, select **Create** at the bottom of the dialogue to continue.
+-- MAGIC
+-- MAGIC In the resulting window, you'll be presented with a chat panel on the left and the configuration settings open on the right with **Configure** and **Data** selected.
+-- MAGIC 1. Switch the view from **Data** to **Settings**.
+-- MAGIC 1. In the **Title** field, enter `Canada Sales and Opportunities Current Year`.
+-- MAGIC 1. Leave the **Description** field blank for now.
+-- MAGIC 1. Select an available SQL warehouse if one is not already added. (Recall that a Databricks SQL warehouse encapsulates the compute resources needed to work with our data. SQL warehouses are typically defined by data engineers.)
+-- MAGIC 1. Paste the following sample questions into the input field using the **`+ Add`** button to add each question:
+-- MAGIC         <br/>
+-- MAGIC         ```
+-- MAGIC             Break down 2024 sales by province 
+-- MAGIC         ```
+-- MAGIC         <br/>
+-- MAGIC         ```
+-- MAGIC         Show me the distribution of opportunities by sales phase
+-- MAGIC         ```
+-- MAGIC
+-- MAGIC 8. Click the **Save** button at the bottom. Note that the chat window updated to include the two new questions that were added.
+-- MAGIC
+-- MAGIC The initial definition of your Genie space is now complete. The chat window is what your end users will be able to work with when you publish your Genie space. For now, though, you are the only person with access to the Genie Space. 
+-- MAGIC
+-- MAGIC
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC ### B: Interact with the Genie space
+-- MAGIC
+-- MAGIC 1. In the Genie space's chat field, click the question button labeled **Explain the data set**. Genie responds with an AI-generated explanation of the data it was given. How did it do?
+-- MAGIC 2. Now, click on <img src="../Includes/images/new_chat_icon.png" width="20" /> icon in the upper right from the list of options, then click on the button labeled **Break down 2024 sales by province** to enter the query.
+-- MAGIC
+-- MAGIC 3. Now entering this into the chat window: ```Split out the revenue from British Columbia by product```
+-- MAGIC
+-- MAGIC 4. Is Genie's response to that query satisfactory? Click the **`(✓)Yes`** icon if yes, otherwise click the **`(x)Fix it`** icon.
+-- MAGIC
+-- MAGIC 5. If it was not satisfactory, chances are Genie did not deduce that the values of the **province** field are the standard abbreviations for Canadian provinces. These abbreviations were in the training set for Genie's Large Language Model (LLM), but it just doesn't have enough context on our data to know to use them here. Give it some context by entering this into the chat window:
+-- MAGIC ```
+-- MAGIC Use Canadian province abbreviations for the province field
+-- MAGIC ```
+-- MAGIC 6. Did Genie respond appropriately to this guidance? Again, click the **`(✓)Yes`** icon if yes, otherwise click the **`(x)Fix it`** icon.
+-- MAGIC
+-- MAGIC
+-- MAGIC 7. If Genie told you that the data in the table uses province names rather than abbreviations, simply tell it that it is incorrect:
+-- MAGIC ```
+-- MAGIC no it doesn't, the data in the province field is abbreviations
+-- MAGIC ```
+-- MAGIC
+-- MAGIC   How does Genie respond to the new information? If Genie made an error previously, scroll back in the dialogue to see that Genie has updated its previous response.
+-- MAGIC
+-- MAGIC 8. Let's try a new query that also depends on Genie's contextual understanding of the **province** field:
+-- MAGIC ```
+-- MAGIC now do the same for alberta
+-- MAGIC ```
+-- MAGIC
+-- MAGIC   In order to respond to this query correctly, Genie will have to know that AB in the table represents Alberta. How did Genie do?
+-- MAGIC
+-- MAGIC 9. If Genie erred in this dialogue for you, scroll back to where you corrected it and click the **Add as instruction** button. Only users with CAN MANAGE or CAN EDIT privilege on the dashboard can do so; right now that is only you.
+-- MAGIC
+-- MAGIC 10. Now ask Genie for a visualization: 
+-- MAGIC ```
+-- MAGIC Show me the distribution of opportunities by sales phase
+-- MAGIC ```
+-- MAGIC What type of graph did Genie choose?
+-- MAGIC
+-- MAGIC 11. Ask explicitly for a bar chart.
+-- MAGIC ```
+-- MAGIC give me a stacked bar chart showing that on a weekly basis
+-- MAGIC ```
+-- MAGIC Did Genie figure out the temporal interval correctly?
+-- MAGIC
+-- MAGIC 12. If your bar chart seems to have extremely thin and widely spaced vertical bars, it is because Genie chose to treat the X axis as covering a range of time rather than a series of per-week values. Click the pencil icon to edit the visualization; click on the **week** field, and change the scale type from continuous to categorical. Does the graph improve?
+-- MAGIC
+-- MAGIC **NOTE:** Databricks is constantly improving the underlying large language model that Genie uses to develop responses, so it's possible that you won't receive any errors in your conversation with Genie based on the above example. Try prompting Genie with different queries to see how it responds. Did it respond as you expected or was there a misunderstanding of your question?
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC ### C: Create a Genie space that is tied to a dashboard
+-- MAGIC Genie spaces can also be added to Dashboards directly. Use the following instructions to create a new dashboard and auto-create a Genie space for that dashboard. 
+-- MAGIC
+-- MAGIC 1. Select **Dashboards** from the sidebar navigation.
+-- MAGIC 1. Click the **Create dashboard** button at top right.
+-- MAGIC 1. Click on the temporary name for the dashboard at top center and change it to **Scratch dashboard**.
+-- MAGIC 1. Click the **Data** tab.
+-- MAGIC 1. Click the **+ Add data source** button. Navigate to the **dbacademy** catalog, and then into your personal schema. Choose the **ca_orders** table.
+-- MAGIC 1. Click on the **Untitled page** canvas tab at top left to switch to the canvas view.
+-- MAGIC 1. Click the icon in the palette for adding a visualization. Add a pie chart to the dashboard.
+-- MAGIC 1. Land the new widget on the left side of the canvas. Click in the new widget to give it focus.  
+-- MAGIC 1. In the **Configuration Panel** on the right, make the following selections for the settings: 
+-- MAGIC
+-- MAGIC     - **Dataset**: **ca_orders**
+-- MAGIC     - **Title:** Checked
+-- MAGIC       - Click on the placeholder widget title on the visualization.
+-- MAGIC       - Change it by typing over it to **Revenue Share by Product**.
+-- MAGIC     - **Visualization**: Pie
+-- MAGIC     - **Angle**: **orderamt** (The user interface will intuit that you want to apply the SUM aggregation.)
+-- MAGIC
+-- MAGIC       Click on **SUM(orderamt)** and fill in **Revenue** for the display name.
+-- MAGIC     - **Color**: Click the **+** and choose **productid**.
+-- MAGIC       Click on **productid** and fill in **Product Id** for the display name.
+-- MAGIC
+-- MAGIC 1. Click the **(⋮)** kebab menu icon in the top-right corner and select the **Settings** option.
+-- MAGIC
+-- MAGIC 1. From the **Settings** sidebar window, select the **General** tab.
+-- MAGIC
+-- MAGIC 1. Click the **Enable Genie** button to activate **Genie** for your dashboard.
+-- MAGIC
+-- MAGIC     - You will be given the option to select 
+-- MAGIC         - Auto-generate Genie space (Note this feature is in Beta currently.)
+-- MAGIC         - Link existing Genie space
+-- MAGIC     - For this exercise, select **Auto-generate Genie space**.
+-- MAGIC
+-- MAGIC **NOTE:** This feature is currently in **Beta** and may operate in an unpredictable manner. If you're unable to complete this exercise when you attempt it, please simply read through the instructions and other details below and try again at another time. Thank you!
+-- MAGIC
+-- MAGIC 13. Click **Publish** to open the publishing dialog box. Leave the **Share data permission** option as default.
+-- MAGIC
+-- MAGIC 1. Now publish the dashboard by clicking **Publish** in the lower-right corner of the dialog.
+-- MAGIC
+-- MAGIC 1. Dismiss the **Sharing** popup panel that appears.
+-- MAGIC 1. You will still be looking at your draft dashboard. Use the **View Published** toggle at top of the dashboard to change your view to the published dashboard.
+-- MAGIC 1. Notice that there is now an **Ask Genie** button embedded at the bottom. What happens when you click it? Additionally, each visualization will now have an icon indicating that you can follow up with Genie on that specific visualization.
+-- MAGIC
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC ### D: Compare standalone Genie spaces to embedded Genie spaces
+-- MAGIC
+-- MAGIC Let's see how these two types of Genie spaces differ. You should still be looking at your scratch dashboard with the **Ask Genie** button at bottom.
+-- MAGIC
+-- MAGIC 1. Click the **Ask Genie** button. A chat window opens at right. Recall that you are the creator of this Genie space and therefore the owner and manager. Do you have any way to open this Genie space's configuration details?
+-- MAGIC
+-- MAGIC 1. Select **Genie** from the sidebar navigation.
+-- MAGIC 1. How many Genie spaces do you see in the list: one or two?
+-- MAGIC 1. From the list, click the Genie space you created called **Canada Sales and Opportunities Current Year**. Can you open this Genie space's configuration details?
+-- MAGIC
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC ### E: Associate an existing Genie space with a dashboard
+-- MAGIC
+-- MAGIC During a previous activity, you saw that the Genie spaces auto-generated when you share a dashboard lack some management functionality, especially when viewed from within the dashboard. Opening the Genie space in a new window, accessible via the kebab menu on the Genie space, will give you limited management ability, including the option to review feedback and set SQL queries. However, you cannot edit custom instructions or the details of the Genie space when created via auto-generation from a Dashboard. 
+-- MAGIC
+-- MAGIC For this exercise, we'll instead associate the stand alone Genie space that we built earlier with our **Scratch Dashboard**.
+-- MAGIC
+-- MAGIC 1. First, we must obtain the URL of the Genie space to which we want to link. Select **Genie** from the sidebar navigation.
+-- MAGIC
+-- MAGIC 1. In the resulting list of Genie spaces, right-click on the **Canada Sales and Opportunities Current Year** Genie space, and use your browser's Open in New Tab function to open that Genie space while still preserving your main browser tab. 
+-- MAGIC
+-- MAGIC 1. In the newly opened tab, select **Share** and choose **Copy link** from the bottom left to get the URL for the Genie space. You'll be pasting this URL in a subsequent step.
+-- MAGIC
+-- MAGIC 1. Return to your main browser tab. Select **Dashboards** from the sidebar navigation.
+-- MAGIC
+-- MAGIC 1. Click on **Scratch Dashboard** in the dashboard listing.
+-- MAGIC
+-- MAGIC 1. Use the **Edit Draft** context button at the top of the dashboard display to make sure that you are looking at the **Draft** version.
+-- MAGIC
+-- MAGIC 1. Click the **(⋮)** kebab menu icon in the top-right corner and select the **Settings** option.
+-- MAGIC
+-- MAGIC 1. From the **Settings** sidebar window, select the **General** tab.
+-- MAGIC
+-- MAGIC 1. Click the **Enable Genie** button to activate **Genie** for your dashboard.
+-- MAGIC
+-- MAGIC 1. Underneath **Enable Genie**, you are given a choice between creating an Auto-generated Genie space or using an existing one. Choose **Link existing Genie space**. 
+-- MAGIC
+-- MAGIC 1. Paste the URL of the **Canada Sales and Opportunities Current Year** Genie space into the box labeled **Paste URL here...**.
+-- MAGIC
+-- MAGIC 1. We will now republish the dashboard. Click the **Publish** button at top right. Leave the **Share data permission** option as default, and Click **Publish** in the lower-right corner of the dialog.
+-- MAGIC
+-- MAGIC 1. Dismiss the **Sharing** window if it appears and toggle to the published dashboard. 
+-- MAGIC
+-- MAGIC 1. In the resulting dashboard, click **Ask Genie** at the bottom.
+-- MAGIC
+-- MAGIC 1. A Genie chat window opens at right. Enter any query you like. Give feedback on the result.
+-- MAGIC
+-- MAGIC 1. Now go back to your other browser tab that is open to the **Canada Sales and Opportunities Current Year** Genie space. Click on the **Monitoring** button from the options at the top right (the option with an icon resembling an eye). Notice that your query and your feedback appear in the list.
+-- MAGIC
+-- MAGIC What do you think the appropriate use cases are for auto-generated Genie spaces and standalone Genie spaces?
+-- MAGIC
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC &copy; 2026 Databricks, Inc. All rights reserved. Apache, Apache Spark, Spark, the Spark Logo, Apache Iceberg, Iceberg, and the Apache Iceberg logo are trademarks of the <a href="https://www.apache.org/" target="_blank">Apache Software Foundation</a>.<br/><br/><a href="https://databricks.com/privacy-policy" target="_blank">Privacy Policy</a> | <a href="https://databricks.com/terms-of-use" target="_blank">Terms of Use</a> | <a href="https://help.databricks.com/" target="_blank">Support</a>

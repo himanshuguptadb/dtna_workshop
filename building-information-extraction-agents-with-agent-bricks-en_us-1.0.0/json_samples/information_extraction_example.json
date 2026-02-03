@@ -1,0 +1,110 @@
+
+{
+  "article_references": [
+    {
+      "citation": "Solaiman and Dennison (2021)",
+      "authors": ["Solaiman", "Dennison"],
+      "year": "2021",
+      "method": "Fine‐tune language models on a small, value‐targeted dataset",
+      "relevance": "Improves the models' ability to adhere to desired values on question‐answering tasks"
+    },
+    {
+      "citation": "Ngo et al. (2021)",
+      "authors": ["Ngo", "et al."],
+      "year": "2021",
+      "method": "Filter the pretraining dataset by removing documents with high conditional likelihood of generating researcher‐written trigger phrases",
+      "relevance": "Leads to less harmful text generation at the cost of a slight decrease in language modeling performance"
+    },
+    {
+      "citation": "Xu et al. (2020)",
+      "authors": ["Xu", "et al."],
+      "year": "2020",
+      "method": "Apply a suite of safety measures (data filtering, blocking words/ n-grams, safety‐specific control tokens, human-in-the-loop data collection)",
+      "relevance": "Enhances the safety of conversational agents"
+    },
+    {
+      "citation": "Keskar et al. (2019)",
+      "authors": ["Keskar", "et al."],
+      "year": "2019",
+      "method": "Introduce safety‐specific control tokens during generation",
+      "relevance": "Helps steer generated text away from harmful content"
+    },
+    {
+      "citation": "Dinan et al. (2019a)",
+      "authors": ["Dinan", "et al."],
+      "year": "2019",
+      "method": "Use safety‐specific control tokens",
+      "relevance": "Contributes to safer chatbot outputs"
+    },
+    {
+      "citation": "Dinan et al. (2019b)",
+      "authors": ["Dinan", "et al."],
+      "year": "2019",
+      "method": "Human-in-the-loop data collection",
+      "relevance": "Improves model alignment through targeted human feedback"
+    },
+    {
+      "citation": "Liu et al. (2019)",
+      "authors": ["Liu", "et al."],
+      "year": "2019",
+      "method": "Word embedding regularization and data augmentation",
+      "relevance": "Mitigates generated bias in language models"
+    },
+    {
+      "citation": "Huang et al. (2019)",
+      "authors": ["Huang", "et al."],
+      "year": "2019",
+      "method": "Word embedding regularization",
+      "relevance": "Reduces bias in generated text"
+    },
+    {
+      "citation": "Sheng et al. (2019)",
+      "authors": ["Sheng", "et al."],
+      "year": "2019",
+      "method": "Data augmentation",
+      "relevance": "Helps diversify the model’s training examples to counteract bias"
+    },
+    {
+      "citation": "Liang et al. (2021)",
+      "authors": ["Liang", "et al."],
+      "year": "2021",
+      "method": "Null‐space projection to make the distribution over sensitive tokens more uniform",
+      "relevance": "Reduces sensitive‐token bias in generation"
+    },
+    {
+      "citation": "Qian et al. (2019)",
+      "authors": ["Qian", "et al."],
+      "year": "2019",
+      "method": "Experiment with different objective functions",
+      "relevance": "Offers alternative training goals to mitigate unwanted behaviors"
+    },
+    {
+      "citation": "Vig et al. (2020)",
+      "authors": ["Vig", "et al."],
+      "year": "2020",
+      "method": "Causal mediation analysis",
+      "relevance": "Analyzes and intervenes in internal model pathways to reduce bias"
+    },
+    {
+      "citation": "Dathathri et al. (2019)",
+      "authors": ["Dathathri", "et al."],
+      "year": "2019",
+      "method": "Steer generation using a second, smaller language model",
+      "relevance": "Guides the primary model toward safer or more appropriate outputs"
+    },
+    {
+      "citation": "Krause et al. (2020)",
+      "authors": ["Krause", "et al."],
+      "year": "2020",
+      "method": "Use a secondary model to steer generation",
+      "relevance": "Improves control over language model outputs"
+    },
+    {
+      "citation": "Schick et al. (2021)",
+      "authors": ["Schick", "et al."],
+      "year": "2021",
+      "method": "Apply steering variants specifically to reduce toxicity",
+      "relevance": "Demonstrates reduced harmful and toxic language generation"
+    }
+  ]
+}
