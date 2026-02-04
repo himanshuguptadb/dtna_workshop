@@ -121,7 +121,7 @@ class DBAcademyHelper(NestedNamespace):
         df = df.withColumn("schema_name", regexp_replace(regexp_extract("current_user", r"([^@]+)", 1), r"\.", "_"))
         schema = df.first()["schema_name"]
         catalog = default_catalog
-        spark.sql(f'CREATE CATALOG IF NOT EXISTS {catalog};')
+        #spark.sql(f'CREATE CATALOG IF NOT EXISTS {catalog};')
         spark.sql(f'CREATE SCHEMA IF NOT EXISTS {catalog}.{schema};')
         spark.sql(f'CREATE VOLUME IF NOT EXISTS {catalog}.{schema}.{schema};')
 
