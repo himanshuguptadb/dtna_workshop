@@ -82,8 +82,8 @@
 # COMMAND ----------
 
 # assign vs search endpoint by username
-vs_endpoint_prefix = "vs_endpoint_"
-vs_endpoint_name = vs_endpoint_prefix+str(get_fixed_integer(DA.unique_name("_")))
+#vs_endpoint_prefix = "vs_endpoint_"
+vs_endpoint_name = "agent_bootcamp_endpoint"
 vs_source_table_name = f"{DA.catalog_name}.{DA.schema_name}.product_text"
 vs_index_table_name = f"{DA.catalog_name}.{DA.schema_name}.product_embeddings"
 

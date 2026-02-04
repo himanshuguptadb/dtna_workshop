@@ -8,6 +8,10 @@ DA.init()
 
 # COMMAND ----------
 
+DA.schema_name
+
+# COMMAND ----------
+
 from pyspark.sql.types import *
 from pyspark.sql.functions import udf, col
 import random

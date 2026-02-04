@@ -1,4 +1,50 @@
 # Databricks notebook source
+from pyspark.sql.functions import regexp_replace, regexp_extract
+
+df = spark.sql("SELECT current_user() AS current_user")
+current_user = df.first()["current_user"]
+df = df.withColumn("schema_name", regexp_replace(regexp_extract("current_user", r"([^@]+)", 1), r"\.", "_"))
+schema_name = df.first()["schema_name"]
+
+# COMMAND ----------
+
+from pyspark.sql.types import StructType, StructField, StringType
+
+schema = StructType([
+    StructField("owner", StringType(), True),
+    StructField("object", StringType(), True),
+    StructField("key", StringType(), True),
+    StructField("value", StringType(), True)
+])
+
+meta = spark.createDataFrame([], schema)
+#display(meta)
+
+# COMMAND ----------
+
+from pyspark.sql import Row
+data = []
+data = [
+    Row(owner=f"{current_user}", object=None, key="username", value=f"{current_user}"),
+    Row(owner=f"{current_user}", object=None, key="catalog_name", value="dbacademy"),
+    Row(owner=f"{current_user}", object=None, key="schema_name", value=f"{schema_name}"),
+    Row(owner=f"{current_user}", object=None, key="paths.working_dir", value=f"/Volumes/dbacademy/{schema_name}/{schema_name}"),
+    Row(owner=f"{current_user}", object=None, key="cluster_name", value=f"{schema_name}"),
+    Row(owner="account users", object=None, key="datasets.Databricks_ArXiv_Sample_Articles", value="Databricks_ArXiv_Sample_Articles.v01"),
+    Row(owner="account users", object=None, key="paths.datasets.Databricks_ArXiv_Sample_Articles", value="/Volumes/Databricks_ArXiv_Sample_Articles/v01"),
+    Row(owner="account users", object=None, key="datasets.Databricks_Databricks_Documentation_Dataset", value="Databricks_Databricks_Documentation_Dataset.v01"),
+    Row(owner="account users", object=None, key="paths.datasets.Databricks_Databricks_Documentation_Dataset", value="/Volumes/Databricks_Databricks_Documentation_Dataset/v01"),
+    Row(owner="account users", object=None, key="datasets.Databricks_Sample_Market_Data_News_Sentiment", value="Databricks_Sample_Market_Data_News_Sentiment.v01"),
+    Row(owner="account users", object=None, key="paths.datasets.Databricks_Sample_Market_Data_News_Sentiment", value="/Volumes/Databricks_Sample_Market_Data_News_Sentiment/v01"),
+    Row(owner=f"{current_user}", object=None, key="pseudonym", value=f"{schema_name}")
+]
+
+new_meta = spark.createDataFrame(data, meta.schema)
+meta = meta.unionByName(new_meta)
+#display(meta)
+
+# COMMAND ----------
+
 from databricks.sdk import WorkspaceClient
 from databricks.sdk.errors.platform import NotFound
 import pyspark.sql.functions as F
@@ -59,20 +105,22 @@ class DBAcademyHelper(NestedNamespace):
         super().__init__(**kwargs)
         self.workspace = WorkspaceClient()
 
-        try:
-            default_catalog = self.workspace.settings.default_namespace.get().namespace.value
-        except:
-            default_catalog = 'dbacademy'
+        #try:
+        #    default_catalog = self.workspace.settings.default_namespace.get().namespace.value
+        #except:
+        default_catalog = 'dbacademy'
 
-        meta = f'{default_catalog}.ops.meta'
-        catalog = None
-        schema = None
+        from pyspark.sql.functions import regexp_replace, regexp_extract
+        df = spark.sql("SELECT current_user() AS current_user")
+        df = df.withColumn("schema_name", regexp_replace(regexp_extract("current_user", r"([^@]+)", 1), r"\.", "_"))
+        schema = df.first()["schema_name"]
+        catalog = default_catalog
 
         from py4j.protocol import Py4JJavaError
         from pyspark.errors import PySparkException
 
         try:
-            rows = spark.table(meta).collect()
+            rows = meta.collect()
         except Py4JJavaError:
             raise Exception(f'Error accessing metadata table {meta}; are you using serverless or DBR >= 15.1?')
         except PySparkException:
@@ -199,3 +247,8 @@ class DBAcademyHelper(NestedNamespace):
 
     def unique_name(self, sep: str = '_') -> str:
         return self.pseudonym.replace(' ', sep)
+
+# COMMAND ----------
+
+DA = DBAcademyHelper()
+DA.init()
