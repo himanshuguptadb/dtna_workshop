@@ -117,6 +117,8 @@ class DBAcademyHelper(NestedNamespace):
 
         #meta = f'{default_catalog}.ops.meta'
         catalog = default_catalog
+        spark.sql(f'USE CATALOG {catalog}')
+        spark.sql(f"create schema if not exists {schema_name}")
         schema = schema_name
 
         from py4j.protocol import Py4JJavaError

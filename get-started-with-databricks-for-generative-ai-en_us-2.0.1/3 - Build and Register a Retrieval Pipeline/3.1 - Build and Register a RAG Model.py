@@ -181,6 +181,10 @@ vsc = VectorSearchClient(disable_notice=True)
 
 question = "handmade lamp with remote control"
 
+vs_endpoint_name = "one-env-shared-endpoint-15"
+
+vs_index_table_name = "dbacademy.himanshu_gupta.product_text_idx"
+
 try:
     # get index created in the previous step
     index = vsc.get_index(vs_endpoint_name, vs_index_table_name)
